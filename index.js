@@ -1,4 +1,5 @@
 window.addEventListener('load', function() {
+  loadWeather()
   document.getElementById('zipCodeSubmit').onclick = getWeatherByZip;
 })
 
@@ -10,7 +11,7 @@ function getWeatherByZip() {
   }
 }
 
-function loadWeather(zipCode) {
+function loadWeather(zipCode = 11221) {
   const key = 'a6a2cec7737de68bac44ec6349002f5b';
   const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&units=imperial&appid=${key}`;
 
