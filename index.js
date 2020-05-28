@@ -21,8 +21,9 @@ function loadWeather(zipCode = 11221) {
     if(this.readyState === 4 && this.status === 200) {
       const payload = JSON.parse(this.responseText);
       const tempInF = Math.round(payload.main.temp);
-
-      displayWeather(tempInF);
+      const weatherIconCode = payload.weather[0].icon;
+      displayTemperature(tempInF);
+      displayWeatherIcon(weatherIconCode);
     };
   };
 
@@ -30,6 +31,12 @@ function loadWeather(zipCode = 11221) {
   xhttp.send();
 }
 
-function displayWeather(weather) {
+function displayTemperature(weather) {
   document.getElementById('weather').innerHTML = weather;
 };
+
+function displayWeatherIcon(weatherIconCode) {
+  const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}@2x.png`
+  const weatherIconImage = document.getElementById('weatherIcon'); 
+  weatherIconImage.src = weatherIconUrl;
+}
