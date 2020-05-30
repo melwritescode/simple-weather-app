@@ -1,12 +1,13 @@
 window.addEventListener('load', function() {
-  loadWeather()
+  loadWeather();
+  toggleScale();
   document.getElementById('zipCodeSubmit').onclick = getWeatherByZip;
 })
 
 function getWeatherByZip() {
   const zipCode = document.getElementById('zipCodeInput').value;
-  const fiveDigits = /^\d{5}$/;
-  if(fiveDigits.test(zipCode)) {
+  const fiveDigitsRegEx = /^\d{5}$/;
+  if(fiveDigitsRegEx.test(zipCode)) {
     loadWeather(zipCode)
   }
 }
@@ -29,7 +30,7 @@ function loadWeather(zipCode = 11221) {
 
   xhttp.open('GET', url, true);
   xhttp.send();
-}
+};
 
 function displayTemperature(weather) {
   document.getElementById('weather').innerHTML = weather;
@@ -39,4 +40,32 @@ function displayWeatherIcon(weatherIconCode) {
   const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconCode}@2x.png`
   const weatherIconImage = document.getElementById('weatherIcon'); 
   weatherIconImage.src = weatherIconUrl;
-}
+};
+
+function toggleScale() {
+  let scale = document.getElementById('tempScale');
+  scale.onclick = function() {
+    if(scale.innerHTML === 'Fahrenheit') {
+      scale.innerHTML = 'Celsius';
+    }
+    else {
+      scale.innerHTML = 'Fahrenheit';
+    };
+    convertTemperature(scale.innerHTML);
+  };
+};
+
+function convertTemperature(scale) {
+  const currentTemp = document.getElementById('weather');
+  const currentTempInt = parseInt(currentTemp.innerHTML);
+
+  const conversions = {
+    'Celsius': Math.round((currentTempInt - 32) * 5/9),
+    'Fahrenheit': Math.round((currentTempInt * 9/5) + 32) 
+  };
+  if(scale !== currentTemp.innerHTML) {
+    currentTemp.innerHTML = conversions[scale];
+  }
+
+  return currentTempInt;
+};
