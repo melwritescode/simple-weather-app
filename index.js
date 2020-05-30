@@ -23,12 +23,13 @@ function loadWeather(zipCode = 11221) {
       const tempScale = document.getElementById('tempScale').innerHTML;
       const payload = JSON.parse(this.responseText);
       const temperature = Math.round(payload.main.temp);
-
-      const converted = convertTemperature('Fahrenheit', temperature)
-      console.log('Converted:', converted)
-
+      if(tempScale === 'Celsius') {
+        convertAndDisplayTemp(temperature)
+      } 
+      else {
+        displayTemperature(temperature);
+      }
       const weatherIconCode = payload.weather[0].icon;
-      // displayTemperature(temperature);
       displayWeatherIcon(weatherIconCode);
     };
   };
@@ -49,41 +50,27 @@ function displayWeatherIcon(weatherIconCode) {
 
 function toggleScale() {
   let scale = document.getElementById('tempScale');
-  let currentTemp = document.getElementById('weather').innerHTML;
   
   scale.onclick = function() {
+    let currentTemp = document.getElementById('weather').innerHTML;
     if(scale.innerHTML === 'Fahrenheit') {
       scale.innerHTML = 'Celsius';
     }
     else {
       scale.innerHTML = 'Fahrenheit';
     };
-    convertTemperature(scale.innerHTML, currentTemp);
+    convertAndDisplayTemp(currentTemp);
   };
 };
 
-function convertTemperature(scale, temp = 77) {
-  // scale: 'F', temp: 80
-  const currentScale = document.getElementById('tempScale').innerHTML;
-  const currentTemp = document.getElementById('weather');
-
-
+function convertAndDisplayTemp(temp) {
   const conversions = {
     'Celsius': Math.round((temp - 32) * 5/9),
     'Fahrenheit': Math.round((temp * 9/5) + 32) 
   };
-// if scale pulled from the DOM !== scale passed in
-  // convert the temp passed in to the scale that is on the DOM
+  const currentScale = document.getElementById('tempScale').innerHTML;
+  const convertedTemp = conversions[currentScale];
 
-  // currentTemp.innerHTML = conversions[currentScale];
-
-  console.log(currentScale, scale)
-  if(scale !== currentScale) {
-    console.log(currentTemp.innerHTML)
-    currentTemp.innerHTML = conversions[currentScale];
-  } else {
-    displayTemperature(temp)
-  }
-
-  return currentTemp.innerHTML;
+  displayTemperature(convertedTemp)
 };
+
