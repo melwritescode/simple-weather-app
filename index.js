@@ -20,10 +20,15 @@ function loadWeather(zipCode = 11221) {
   
   xhttp.onreadystatechange = function() {
     if(this.readyState === 4 && this.status === 200) {
+      const tempScale = document.getElementById('tempScale').innerHTML;
       const payload = JSON.parse(this.responseText);
-      const tempInF = Math.round(payload.main.temp);
+      const temperature = Math.round(payload.main.temp);
+
+      const converted = convertTemperature('Fahrenheit', temperature)
+      console.log('Converted:', converted)
+
       const weatherIconCode = payload.weather[0].icon;
-      displayTemperature(tempInF);
+      // displayTemperature(temperature);
       displayWeatherIcon(weatherIconCode);
     };
   };
@@ -44,6 +49,8 @@ function displayWeatherIcon(weatherIconCode) {
 
 function toggleScale() {
   let scale = document.getElementById('tempScale');
+  let currentTemp = document.getElementById('weather').innerHTML;
+  
   scale.onclick = function() {
     if(scale.innerHTML === 'Fahrenheit') {
       scale.innerHTML = 'Celsius';
@@ -51,21 +58,32 @@ function toggleScale() {
     else {
       scale.innerHTML = 'Fahrenheit';
     };
-    convertTemperature(scale.innerHTML);
+    convertTemperature(scale.innerHTML, currentTemp);
   };
 };
 
-function convertTemperature(scale) {
+function convertTemperature(scale, temp = 77) {
+  // scale: 'F', temp: 80
+  const currentScale = document.getElementById('tempScale').innerHTML;
   const currentTemp = document.getElementById('weather');
-  const currentTempInt = parseInt(currentTemp.innerHTML);
+
 
   const conversions = {
-    'Celsius': Math.round((currentTempInt - 32) * 5/9),
-    'Fahrenheit': Math.round((currentTempInt * 9/5) + 32) 
+    'Celsius': Math.round((temp - 32) * 5/9),
+    'Fahrenheit': Math.round((temp * 9/5) + 32) 
   };
-  if(scale !== currentTemp.innerHTML) {
-    currentTemp.innerHTML = conversions[scale];
+// if scale pulled from the DOM !== scale passed in
+  // convert the temp passed in to the scale that is on the DOM
+
+  // currentTemp.innerHTML = conversions[currentScale];
+
+  console.log(currentScale, scale)
+  if(scale !== currentScale) {
+    console.log(currentTemp.innerHTML)
+    currentTemp.innerHTML = conversions[currentScale];
+  } else {
+    displayTemperature(temp)
   }
 
-  return currentTempInt;
+  return currentTemp.innerHTML;
 };
